@@ -1,3 +1,4 @@
+import os
 import logging
 from utility import get_json_from_url
 from weather_providers.base_provider import BaseWeatherProvider
@@ -62,24 +63,27 @@ class WeatherGov(BaseWeatherProvider):
         lookup_url = "https://api.weather.gov/points/{},{}".format(lat, long)
         lookup_data = get_json_from_url(lookup_url, {'User-Agent':'({0})'.format(self.weathergov_self_id)}, "cache_weather_gov_lookup.json", 3600)
         logging.debug(lookup_data)
-        return lookup_data["properties"]["forecast"]
+        return lookup_data["properties"]["forecast"], lookup_data["properties"]["forecastHourly"]
 
     # Get weather from Weather.Gov, US only
     # https://www.weather.gov/documentation/services-web-api
     def get_weather(self):
 
-        forecast_url = self.get_forecast_url(self.location_lat, self.location_long)
+        forecast_url, hourly_url = self.get_forecast_url(self.location_lat, self.location_long)
         # https://api.weather.gov/gridpoints/TOP/31,80/forecast"
         logging.info(forecast_url)
 
         response_data = self.get_response_json(forecast_url, {'User-Agent':'({0})'.format(self.weathergov_self_id)})
+        ttl = float(os.getenv("WEATHER_TTL", 1 * 60 * 60))
+        hourly_data = get_json_from_url(hourly_url, {'User-Agent':'({0})'.format(self.weathergov_self_id)}, 'cache_hourly_weather.json', ttl)
         weather_data = response_data
         logging.debug("get_weather() - {}".format(weather_data))
 
         daytime = self.is_daytime(self.location_lat, self.location_long)
 
-        # Weather.gov doesn't provide a min max temperature.  It uses the current and upcoming temperatures as min max instead.  
+        # Weather.gov doesn't provide a min max temperature.  It uses the current and upcoming temperatures as min max instead.
         current_forecast = weather_data["properties"]["periods"][0]
+        current_temp = hourly_data["properties"]["periods"][0]["temperature"]
         upcoming_forecast = weather_data["properties"]["periods"][1]
         min_temp = min(current_forecast["temperature"], upcoming_forecast["temperature"])
         max_temp = max(current_forecast["temperature"], upcoming_forecast["temperature"])
@@ -89,8 +93,11 @@ class WeatherGov(BaseWeatherProvider):
 
         weather = {}
         weather["description"] = current_forecast["shortForecast"]
+        weather["currTemp"] = current_temp if self.units != "metric" else self.f_to_c(current_temp)
         weather["temperatureMin"] = min_temp if self.units != "metric" else self.f_to_c(min_temp)
         weather["temperatureMax"] = max_temp if self.units != "metric" else self.f_to_c(max_temp)
         weather["icon"] = self.get_icon_from_weathergov_icon_urls(current_forecast["icon"], daytime)
         logging.debug(weather)
+        logging.info(current_temp)
+
         return weather

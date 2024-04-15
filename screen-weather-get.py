@@ -170,6 +170,7 @@ def main():
         'LOW_ONE': "{}{}".format(str(round(weather['temperatureMin'])), degrees),
         'HIGH_ONE': "{}{}".format(str(round(weather['temperatureMax'])), degrees),
         'ICON_ONE': weather["icon"],
+        'CURR_TEMP': "{}{}".format(str(round(weather["currTemp"])), degrees),
         'WEATHER_DESC_1': weather_desc[1],
         'WEATHER_DESC_2': weather_desc[2],
         'TIME_NOW_FONT_SIZE': time_now_font_size,
