@@ -16,5 +16,6 @@ venv
 cache_
 .venv
 .env
+screen-calendar-get-cache.py
 
 xkcd-comic-strip.png

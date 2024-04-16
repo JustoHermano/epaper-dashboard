@@ -3,16 +3,16 @@
     <rect width="800" height="480" id="rect3855" fill="white" />
 
     <g transform="scale(1.2) translate(75 165)" id="currentweather">
-        <!-- <use id="currentweathericon" href="icons/ICON_ONE.svg" /> -->
-        <use id="currentweathericon" href="icons/blizzard.svg" />
+        <use id="currentweathericon" href="icons/ICON_ONE.svg" />
+        <!-- <use id="currentweathericon" href="icons/blizzard.svg" /> -->
     </g>
-    ICON_ONE
 
-    <text id="alertmessage" x="0" y="35" font-size="30px" style="font-weight:bold;font-size:30px;line-height:0%;font-family:'Nimbus Mono PS',monospace;text-anchor:beginning">ALERT_MESSAGE</text>
+    <!-- <text id="alertmessage" x="0" y="35" font-size="30px" style="font-weight:bold;font-size:30px;line-height:0%;font-family:'Nimbus Mono PS',monospace;text-anchor:beginning">ALERT_MESSAGE</text> -->
     <text id="temphighlow" x="155" y="360" font-size="32px" style="font-size:32px;line-height:0%;font-family:sans-serif;text-anchor:middle">CURR_TEMP</text>
     <text id="temphighlow" x="155" y="390" font-size="32px" style="font-size:32px;line-height:0%;font-family:sans-serif;text-anchor:middle">HIGH_ONE/LOW_ONE</text>
     <text id="weatherdesc1" x="155" y="415" font-size="32px" style="font-size:22px;line-height:0%;font-family:sans-serif;text-anchor:middle">WEATHER_DESC_1</text>
     <text id="weaetherdesc2" x="155" y="440" font-size="32px" style="font-size:22px;line-height:0%;font-family:sans-serif;text-anchor:middle">WEATHER_DESC_2</text>
+    <text id="texttimesmall" x="40" y="469" font-size="14px" style="font-weight:bold;line-height:0%;font-family:sans-serif;text-anchor:beginning">TIME_NOW</text>
     <path d="m 301.08466,394.8254 v 70 h 3 v -235.5 h -3 z" id="divider" inkscape:connector-curvature="0" />
 
     <g id="calendaricon" transform="scale(0.1) translate(3300,1800)">
@@ -42,11 +42,12 @@
     </text>
 
 
-    <text id="textday" x="600" y="75" style="text-anchor:middle;font-weight:600;font-size:47px;line-height:0%;font-family:sans-serif;">DAY_NAME</text>
+    <text id="textday" x="165" y="75" style="text-anchor:middle;font-weight:600;font-size:47px;line-height:0%;font-family:sans-serif;">DAY_NAME</text>
 
-    <text id="textdate" x="600" y="130" style="text-anchor:middle;font-size:40px;line-height:0%;font-family:sans-serif;">DAY_ONE</text>
+    <text id="textdate" x="165" y="130" style="text-anchor:middle;font-size:40px;line-height:0%;font-family:sans-serif;">DAY_ONE</text>
+    <!-- <text id="textdate" x="600" y="130" style="text-anchor:middle;font-size:40px;line-height:0%;font-family:sans-serif;">DAY_ONE</text> -->
 
-    <text id="texttime" x="20" y="125" font-size="TIME_NOW_FONT_SIZE" style="font-weight:bold;line-height:0%;font-family:sans-serif;text-anchor:beginning">TIME_NOW</text>
+    <!-- <text id="texttime" x="20" y="125" font-size="TIME_NOW_FONT_SIZE" style="font-weight:bold;line-height:0%;font-family:sans-serif;text-anchor:beginning">TIME_NOW</text> -->
 
     <use id="customdata" href="screen-output-custom-temp.svg" />
 

@@ -144,11 +144,12 @@ def get_xml_from_url(url, headers, cache_file_name, ttl):
 
 
 def get_formatted_time(dt):
-    try:
-        formatted_time = format_time(dt, format='short', locale=locale.getlocale()[0])
-    except Exception:
-        logging.debug("Locale not found for Babel library.")
-        formatted_time = dt.strftime("%-I:%M %p")
+    # try:
+    #     formatted_time = format_time(dt, format='short', locale=locale.getlocale()[0])
+    # except Exception:
+    #     logging.debug("Locale not found for Babel library.")
+    formatted_time = dt.strftime("%-I:%M %p")
+    
     return formatted_time
 
 

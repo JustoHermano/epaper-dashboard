@@ -26,6 +26,7 @@ caldav_password = os.getenv("CALDAV_PASSWORD", None)
 caldav_calendar_id = os.getenv("CALDAV_CALENDAR_ID", None)
 
 ics_calendar_url = os.getenv("ICS_CALENDAR_URL", None)
+# ics_calendar_url = os.getenv("ICS_PERSONAL", None)
 
 ttl = float(os.getenv("CALENDAR_TTL", 1 * 60 * 60))
 
@@ -39,7 +40,13 @@ def get_formatted_calendar_events(fetched_events: list[CalendarEvent]) -> dict:
         if index <= event_count - 1:
             formatted_events['CAL_DATETIME_' + event_label_id] = get_datetime_formatted(fetched_events[index].start, fetched_events[index].end, fetched_events[index].all_day_event)
             formatted_events['CAL_DATETIME_START_' + event_label_id] = get_datetime_formatted(fetched_events[index].start, fetched_events[index].end, fetched_events[index].all_day_event, True)
-            formatted_events['CAL_DESC_' + event_label_id] = fetched_events[index].summary
+
+            if len(fetched_events[index].summary) <= 30:
+                summary = fetched_events[index].summary
+            else:
+                summary = fetched_events[index].summary[:30 - 3] + "..."
+
+            formatted_events['CAL_DESC_' + event_label_id] = summary
         else:
             formatted_events['CAL_DATETIME_' + event_label_id] = ""
             formatted_events['CAL_DESC_' + event_label_id] = ""
@@ -78,11 +85,16 @@ def main():
 
     output_svg_filename = 'screen-output-weather.svg'
 
-    today_start_time = datetime.datetime.utcnow()
-    if os.getenv("CALENDAR_INCLUDE_PAST_EVENTS_FOR_TODAY", "0") == "1":
-        today_start_time = datetime.datetime.combine(datetime.datetime.utcnow(), datetime.datetime.min.time())
+    # today_start_time = datetime.datetime.min.time()
+    today_start_time = datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc)
+    # if os.getenv("CALENDAR_INCLUDE_PAST_EVENTS_FOR_TODAY", "0") == "1":
+    #     today_start_time = datetime.datetime.combine(datetime.datetime.utcnow(), datetime.datetime.min.time())
     oneyearlater_iso = (datetime.datetime.now().astimezone()
-                        + datetime.timedelta(days=365)).astimezone()
+                        + datetime.timedelta(days=2)).astimezone()
+    
+    logging.info(datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc))
+    logging.info(today_start_time)
+    logging.info(oneyearlater_iso)
 
     if outlook_calendar_id:
         logging.info("Fetching Outlook Calendar Events")

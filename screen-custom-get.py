@@ -1,4 +1,5 @@
 import os
+import yfinance as yf
 import logging
 from utility import update_svg, configure_logging
 import requests
@@ -15,14 +16,23 @@ def main():
     # Add custom code here like getting PiHole Status, car charger status, API calls.
     # Assign the value you want to display to custom_value_1, and it will replace CUSTOM_DATA_1 in screen-custom.svg.
     # You can edit the screen-custom.svg to change appearance, position, font size, add more custom data.
-    miles, week, weekPercent = fetch_data()
+    data, week_percent = fetch_data()
 
     logging.info("Updating SVG")
     output_dict = {
-        'CUSTOM_DATA_1': str(miles),
-        'CUSTOM_DATA_2': str(week),
-        'CUSTOM_DATA_3': str(weekPercent),
+        'YEAR_VAR': data["miles"],
+        'YEAR_GOAL': data["yearGoal"],
+        'MONTH_VAR': data["month"],
+        'MONTH_GOAL': data["monthGoal"],
+        'WEEK_VAR': data["week"],
+        'WEEK_GOAL': data["weekGoal"],
+        'WEEK_LEFT': data["weekLeft"],
+        'WEEK_PERCENT': str(week_percent),
+        'VOO_PRICE': str(fetch_voo_data()),
+        # 'VOO_PRICE': "999",
     }
+
+    logging.info(output_dict)
     update_svg(output_svg_filename, 'screen-output-custom-temp.svg', output_dict)
 
 
@@ -46,13 +56,26 @@ def fetch_data():
         rounded_week = week.quantize(Decimal('0.0'), rounding=ROUND_DOWN)
 
         weekPercent = week / 60 * 100
-        rounded_weekPercent = weekPercent.quantize(Decimal('0.0'), rounding=ROUND_DOWN)
+        rounded_weekPercent = weekPercent.quantize(Decimal('0'), rounding=ROUND_DOWN)
 
-        return rounded_miles, rounded_week, min(rounded_weekPercent, 100)
+        return data, rounded_weekPercent
 
     except requests.RequestException as e:
         print("Error fetching data:", e)
         return None, None
+
+
+# Function to fetch historical price data for VOO
+def fetch_voo_data():
+    voo_ticker = yf.Ticker("VOO")
+    current_price = voo_ticker.history(period="1d")['Close'].iloc[-1]  # Fetch the latest closing price
+    # Extract week value
+    current_price = Decimal(current_price)
+
+    # Round down the miles value to 2 decimal points
+    current_price = current_price.quantize(Decimal('0.00'), rounding=ROUND_DOWN)
+    logging.info(current_price)
+    return current_price
 
 
 if __name__ == "__main__":

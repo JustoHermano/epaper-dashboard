@@ -75,7 +75,13 @@ class WeatherGov(BaseWeatherProvider):
 
         response_data = self.get_response_json(forecast_url, {'User-Agent':'({0})'.format(self.weathergov_self_id)})
         ttl = float(os.getenv("WEATHER_TTL", 1 * 60 * 60))
-        hourly_data = get_json_from_url(hourly_url, {'User-Agent':'({0})'.format(self.weathergov_self_id)}, 'cache_hourly_weather.json', ttl)
+
+        try:
+            hourly_data = get_json_from_url(hourly_url, {'User-Agent':'({0})'.format(self.weathergov_self_id)}, 'cache_hourly_weather.json', ttl)
+            current_temp = hourly_data["properties"]["periods"][0]["temperature"]
+        except Exception as error:
+            current_temp = None
+        
         weather_data = response_data
         logging.debug("get_weather() - {}".format(weather_data))
 
@@ -83,7 +89,6 @@ class WeatherGov(BaseWeatherProvider):
 
         # Weather.gov doesn't provide a min max temperature.  It uses the current and upcoming temperatures as min max instead.
         current_forecast = weather_data["properties"]["periods"][0]
-        current_temp = hourly_data["properties"]["periods"][0]["temperature"]
         upcoming_forecast = weather_data["properties"]["periods"][1]
         min_temp = min(current_forecast["temperature"], upcoming_forecast["temperature"])
         max_temp = max(current_forecast["temperature"], upcoming_forecast["temperature"])

@@ -19,16 +19,33 @@ class ICSCalendar(BaseCalendarProvider):
         self.from_date = from_date
         self.to_date = to_date
 
-    def get_calendar_events(self) -> list[CalendarEvent]:
+    def get_calendar_events(self, overrideTtl=None) -> list[CalendarEvent]:
+
+        if overrideTtl:
+            setTtl = overrideTtl
+        else:
+            setTtl = ttl
+
         calendar_events = []
         ics_calendar_pickle = 'cache_ics.pickle'
-        if is_stale(os.getcwd() + "/" + ics_calendar_pickle, ttl):
+        if is_stale(os.getcwd() + "/" + ics_calendar_pickle, setTtl):
             logging.debug("Pickle is stale, fetching ICS Calendar")
 
-            ics_events = icalevents.icalevents.events(self.ics_calendar_url, start=self.from_date, end=self.to_date)
+            # ICS_PERSONAL
+            personal_url = os.getenv("ICS_PERSONAL")
+            logging.debug("1")
+            ics_events1 = icalevents.icalevents.events(personal_url, start=self.from_date, end=self.to_date)
+            logging.debug("2")
+            ics_events2 = icalevents.icalevents.events(self.ics_calendar_url, start=self.from_date, end=self.to_date)
+            logging.debug("3")
+            ics_events = ics_events1 + ics_events2
+            logging.debug(ics_events)
+            logging.debug("4")
+
+
             ics_events.sort(key=lambda x: x.start.replace(tzinfo=None))
 
-            logging.debug(ics_events)
+            # logging.debug(ics_events)
 
             for ics_event in ics_events[0:self.max_event_results]:
                 event_end = ics_event.end
@@ -43,7 +60,8 @@ class ICSCalendar(BaseCalendarProvider):
                 event_end = ics_event.end.replace(tzinfo=tz.tzutc()).astimezone(tz.tzlocal())
                 event_start = ics_event.start.replace(tzinfo=tz.tzutc()).astimezone(tz.tzlocal())
 
-                calendar_events.append(CalendarEvent(ics_event.summary, event_start, event_end, ics_event.all_day))
+                if event_end > datetime.datetime.now().astimezone(tz.tzlocal()) and ics_event.summary != 'Lunch':
+                    calendar_events.append(CalendarEvent(ics_event.summary, event_start, event_end, ics_event.all_day))
 
             with open(ics_calendar_pickle, 'wb') as cal:
                 pickle.dump(calendar_events, cal)
@@ -53,3 +71,4 @@ class ICSCalendar(BaseCalendarProvider):
                 calendar_events = pickle.load(cal)
 
         return calendar_events
+        
