@@ -42,9 +42,9 @@
     </text>
 
 
-    <text id="textday" x="165" y="75" style="text-anchor:middle;font-weight:600;font-size:47px;line-height:0%;font-family:sans-serif;">DAY_NAME</text>
+    <text id="textday" x="170" y="75" style="text-anchor:middle;font-weight:600;font-size:40px;line-height:0%;font-family:sans-serif;">DAY_NAME</text>
 
-    <text id="textdate" x="165" y="130" style="text-anchor:middle;font-size:40px;line-height:0%;font-family:sans-serif;">DAY_ONE</text>
+    <text id="textdate" x="165" y="130" style="text-anchor:middle;font-size:38px;line-height:0%;font-family:sans-serif;">DAY_ONE</text>
     <!-- <text id="textdate" x="600" y="130" style="text-anchor:middle;font-size:40px;line-height:0%;font-family:sans-serif;">DAY_ONE</text> -->
 
     <!-- <text id="texttime" x="20" y="125" font-size="TIME_NOW_FONT_SIZE" style="font-weight:bold;line-height:0%;font-family:sans-serif;text-anchor:beginning">TIME_NOW</text> -->

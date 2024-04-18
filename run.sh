@@ -1,6 +1,18 @@
 
 . env.sh
 
+
+#!/bin/bash
+
+file="runningProgram.txt"
+
+if [ -e "$file" ]; then
+    echo "Program already running. Exiting."
+    exit 1
+fi
+
+touch "$file"
+
 function log {
     echo "---------------------------------------"
     echo ${1^^}
@@ -46,3 +58,6 @@ else
 
     .venv/bin/python3 display.py screen-output.png
 fi
+
+
+rm "$file"

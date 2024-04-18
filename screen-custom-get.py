@@ -18,6 +18,13 @@ def main():
     # You can edit the screen-custom.svg to change appearance, position, font size, add more custom data.
     data, week_percent = fetch_data()
 
+    vti_cur_price = fetch_vti_data()
+
+    sold_price = 238
+    stocks_owned = 773
+    vti_lost = (vti_cur_price - sold_price) * stocks_owned
+    vti_lost = vti_lost.quantize(Decimal('0'), rounding=ROUND_DOWN)
+
     logging.info("Updating SVG")
     output_dict = {
         'YEAR_VAR': data["miles"],
@@ -28,7 +35,9 @@ def main():
         'WEEK_GOAL': data["weekGoal"],
         'WEEK_LEFT': data["weekLeft"],
         'WEEK_PERCENT': str(week_percent),
-        'VOO_PRICE': str(fetch_voo_data()),
+        # 'VOO_PRICE': str(fetch_voo_data()),
+        'VTI_PRICE': str(vti_cur_price),
+        'VTI_LOST': str(vti_lost),
         # 'VOO_PRICE': "999",
     }
 
@@ -52,8 +61,8 @@ def fetch_data():
         week = Decimal(data["week"])
 
         # Round down the miles value to 2 decimal points
-        rounded_miles = miles.quantize(Decimal('0.0'), rounding=ROUND_DOWN)
-        rounded_week = week.quantize(Decimal('0.0'), rounding=ROUND_DOWN)
+        # rounded_miles = miles.quantize(Decimal('0.0'), rounding=ROUND_DOWN)
+        # rounded_week = week.quantize(Decimal('0.0'), rounding=ROUND_DOWN)
 
         weekPercent = week / 60 * 100
         rounded_weekPercent = weekPercent.quantize(Decimal('0'), rounding=ROUND_DOWN)
@@ -68,6 +77,18 @@ def fetch_data():
 # Function to fetch historical price data for VOO
 def fetch_voo_data():
     voo_ticker = yf.Ticker("VOO")
+    current_price = voo_ticker.history(period="1d")['Close'].iloc[-1]  # Fetch the latest closing price
+    # Extract week value
+    current_price = Decimal(current_price)
+
+    # Round down the miles value to 2 decimal points
+    current_price = current_price.quantize(Decimal('0.00'), rounding=ROUND_DOWN)
+    logging.info(current_price)
+    return current_price
+
+
+def fetch_vti_data():
+    voo_ticker = yf.Ticker("VTI")
     current_price = voo_ticker.history(period="1d")['Close'].iloc[-1]  # Fetch the latest closing price
     # Extract week value
     current_price = Decimal(current_price)

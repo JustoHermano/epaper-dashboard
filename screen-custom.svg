@@ -37,6 +37,6 @@
         <tspan style="font-size:29px;">YEAR_VAR/YEAR_GOAL</tspan>
     </text>
 
-    <text id="vooPrice" x="165" y="160" style="text-anchor:middle;font-size:20px;line-height:0%;font-family:sans-serif;">VOO_PRICE - 438</text>
+    <text id="vooPrice" x="165" y="160" style="text-anchor:middle;font-size:20px;line-height:0%;font-family:sans-serif;">VTI_PRICE - 238 (VTI_LOST)</text>
 
 </svg>
