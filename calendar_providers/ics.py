@@ -7,9 +7,9 @@ import logging
 import pickle
 import icalevents.icalevents
 from dateutil import tz
+from utility import get_formatted_time, update_svg, configure_logging, get_formatted_date, configure_locale
 
 ttl = float(os.getenv("CALENDAR_TTL", 1 * 60 * 60))
-
 
 class ICSCalendar(BaseCalendarProvider):
 
@@ -33,15 +33,12 @@ class ICSCalendar(BaseCalendarProvider):
 
             # ICS_PERSONAL
             personal_url = os.getenv("ICS_PERSONAL")
-            logging.debug("1")
+            logging.debug("Getting personal events")
             ics_events1 = icalevents.icalevents.events(personal_url, start=self.from_date, end=self.to_date)
-            logging.debug("2")
+            logging.debug("Getting work events")
             ics_events2 = icalevents.icalevents.events(self.ics_calendar_url, start=self.from_date, end=self.to_date)
-            logging.debug("3")
+            logging.debug("Done getting events")
             ics_events = ics_events1 + ics_events2
-            logging.debug(ics_events)
-            logging.debug("4")
-
 
             ics_events.sort(key=lambda x: x.start.replace(tzinfo=None))
 
@@ -60,6 +57,8 @@ class ICSCalendar(BaseCalendarProvider):
                 event_end = ics_event.end.replace(tzinfo=tz.tzutc()).astimezone(tz.tzlocal())
                 event_start = ics_event.start.replace(tzinfo=tz.tzutc()).astimezone(tz.tzlocal())
 
+                logging.debug(ics_event.summary, get_formatted_date(event_end), get_formatted_date(event_start))
+
                 if event_end > datetime.datetime.now().astimezone(tz.tzlocal()) and ics_event.summary != 'Lunch':
                     calendar_events.append(CalendarEvent(ics_event.summary, event_start, event_end, ics_event.all_day))
 
@@ -71,4 +70,3 @@ class ICSCalendar(BaseCalendarProvider):
                 calendar_events = pickle.load(cal)
 
         return calendar_events
-        

@@ -7,8 +7,12 @@ import pickle
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
+from pprint import pprint
+import json
 
 ttl = float(os.getenv("CALENDAR_TTL", 1 * 60 * 60))
+ttl = 1
+
 google_calendar_timezone = os.getenv("GOOGLE_CALENDAR_TIME_ZONE_NAME", None)
 
 
@@ -32,6 +36,8 @@ class GoogleCalendar(BaseCalendarProvider):
         if os.path.exists(google_token_pickle):
             with open(google_token_pickle, 'rb') as token:
                 credentials = pickle.load(token)
+
+        # pprint(vars(credentials))
 
         # If there are no (valid) credentials available, let the user log in.
         if not credentials or not credentials.valid:
@@ -59,15 +65,37 @@ class GoogleCalendar(BaseCalendarProvider):
             logging.debug("Pickle is stale, calling the Calendar API")
 
             # Call the Calendar API
-            events_result = service.events().list(
+            events_result_personal = service.events().list(
                 calendarId=self.google_calendar_id,
-                timeMin=self.from_date.isoformat() + 'Z',
+                timeMin=self.from_date.isoformat(),
                 timeZone=google_calendar_timezone,
-                maxResults=self.max_event_results,
+                maxResults=20,
                 singleEvents=True,
                 orderBy='startTime').execute()
 
-            for event in events_result.get('items', []):
+            events_result = service.events().list(
+                calendarId="dan.fairbrother@huntresslabs.com",
+                timeMin=self.from_date.isoformat(),
+                timeZone=google_calendar_timezone,
+                maxResults=20,
+                singleEvents=True,
+                orderBy='startTime').execute()
+
+            personal = events_result_personal.get('items', [])
+
+            work = events_result.get('items', [])
+
+            print(work)
+
+            # for row in work:
+            #     print(row)
+
+            # events = work
+            events = work + personal
+            events = sorted(events, key=lambda x: x.get("start", {}).get("date", x.get("start", {}).get("dateTime", "")))
+
+            for event in events[0:40]:
+
                 if event['start'].get('date'):
                     is_all_day = True
                     start_date = datetime.datetime.strptime(event['start'].get('date'), "%Y-%m-%d")
@@ -83,7 +111,8 @@ class GoogleCalendar(BaseCalendarProvider):
 
                 summary = event['summary']
 
-                calendar_events.append(CalendarEvent(summary, start_date, end_date, is_all_day))
+                if summary != 'Lunch' and summary != 'Home':
+                    calendar_events.append(CalendarEvent(summary, start_date, end_date, is_all_day))
 
             with open(google_calendar_pickle, 'wb') as cal:
                 pickle.dump(calendar_events, cal)

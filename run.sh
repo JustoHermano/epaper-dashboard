@@ -4,6 +4,7 @@
 
 #!/bin/bash
 
+start_time=$(date +%s)
 file="runningProgram.txt"
 
 if [ -e "$file" ]; then
@@ -11,7 +12,9 @@ if [ -e "$file" ]; then
     exit 1
 fi
 
-touch "$file"
+
+current_date=$(date '+%Y-%m-%d %H:%M:%S')
+echo "Date: $current_date" >> "$file"
 
 function log {
     echo "---------------------------------------"
@@ -61,3 +64,7 @@ fi
 
 
 rm "$file"
+
+end_time=$(date +%s)
+duration=$((end_time - start_time))
+echo "Time taken: $duration seconds | Date: $current_date" >> time_log.txt

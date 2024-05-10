@@ -90,8 +90,8 @@ def main():
     # if os.getenv("CALENDAR_INCLUDE_PAST_EVENTS_FOR_TODAY", "0") == "1":
     #     today_start_time = datetime.datetime.combine(datetime.datetime.utcnow(), datetime.datetime.min.time())
     oneyearlater_iso = (datetime.datetime.now().astimezone()
-                        + datetime.timedelta(days=5)).astimezone()
-    
+                        + datetime.timedelta(days=365)).astimezone()
+
     logging.info(datetime.datetime.utcnow().replace(tzinfo=datetime.timezone.utc))
     logging.info(today_start_time)
     logging.info(oneyearlater_iso)

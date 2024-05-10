@@ -1,4 +1,5 @@
 import os
+import emoji
 import yfinance as yf
 import logging
 from utility import update_svg, configure_logging
@@ -24,6 +25,7 @@ def main():
     stocks_owned = 773
     vti_lost = (vti_cur_price - sold_price) * stocks_owned
     vti_lost = vti_lost.quantize(Decimal('0'), rounding=ROUND_DOWN)
+
 
     logging.info("Updating SVG")
     output_dict = {
