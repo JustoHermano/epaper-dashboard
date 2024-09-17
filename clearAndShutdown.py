@@ -32,10 +32,10 @@ try:
     logging.debug("Clear screen")
     epd.Clear()
 
-    logging.info("Sleep 5 seconds before shutown")
+    logging.info("Sleep 10 seconds before shutown")
     time.sleep(10)
 
-    # os.system("sudo shutdown -h now")
+    os.system("sudo shutdown -h now")
 
 except IOError as e:
     logging.exception(e)

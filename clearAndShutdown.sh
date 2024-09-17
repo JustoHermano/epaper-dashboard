@@ -7,4 +7,4 @@ function log {
     echo "---------------------------------------"
 }
 
-.venv/bin/python3 displayClear.py
+.venv/bin/python3 clearAndShutdown.py
