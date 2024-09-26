@@ -29,13 +29,13 @@ def main():
 
     logging.info("Updating SVG")
     output_dict = {
-        'YEAR_VAR': data["miles"],
-        'YEAR_GOAL': data["yearGoal"],
-        'MONTH_VAR': data["month"],
-        'MONTH_GOAL': data["monthGoal"],
-        'WEEK_VAR': data["week"],
-        'WEEK_GOAL': data["weekGoal"],
-        'WEEK_LEFT': data["weekLeft"],
+        'YEAR_VAR': str(data["miles"]),
+        'YEAR_GOAL': str(data["yearGoal"]),
+        'MONTH_VAR': str(data["month"]),
+        'MONTH_GOAL': str(data["monthGoal"]),
+        'WEEK_VAR': str(data["week"]),
+        'WEEK_GOAL': str(data["weekGoal"]),
+        'WEEK_LEFT': str(data["weekLeft"]),
         'WEEK_PERCENT': str(week_percent),
         # 'VOO_PRICE': str(fetch_voo_data()),
         'VTI_PRICE': str(vti_cur_price),
